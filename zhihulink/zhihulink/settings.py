@@ -68,6 +68,7 @@ DEFAULT_REQUEST_HEADERS = {
 # See https://doc.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
    'zhihulink.pipelines.MongoPipeLine': 300,
+   'scrapy_redis.pipelines.RedisPipeline': 301
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)
@@ -96,3 +97,11 @@ ITEM_PIPELINES = {
 TABLE_NAME = 'userinfo'
 MONGO_URI = 'localhost'
 MONGO_DB = 'zhihu'
+
+#scrapy-redis
+SCHEDULER = "scrapy_redis.scheduler.Scheduler"
+DUPEFILTER_CLASS = "scrapy_redis.dupefilter.RFPDupeFilter"
+# SCHEDULER_FLUSH_ON_START = True
+
+#remote-redis
+REDIS_URL = 'redis://root:123456@192.168.233.66:6379'
