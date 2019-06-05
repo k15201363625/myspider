@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Scrapy settings for weibouser project
+# Scrapy settings for zhihulink project
 #
 # For simplicity, this file contains only settings considered important or
 # commonly used. You can find more settings consulting the documentation:
@@ -9,16 +9,17 @@
 #     https://doc.scrapy.org/en/latest/topics/downloader-middleware.html
 #     https://doc.scrapy.org/en/latest/topics/spider-middleware.html
 
-BOT_NAME = 'weibouser'
+BOT_NAME = 'zhihulink'
 
-SPIDER_MODULES = ['weibouser.spiders']
-NEWSPIDER_MODULE = 'weibouser.spiders'
+SPIDER_MODULES = ['zhihulink.spiders']
+NEWSPIDER_MODULE = 'zhihulink.spiders'
 
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
-#USER_AGENT = 'weibouser (+http://www.yourdomain.com)'
+#USER_AGENT = 'zhihulink (+http://www.yourdomain.com)'
 
 # Obey robots.txt rules
+# https: // www.zhihu.com / robots.txt
 ROBOTSTXT_OBEY = False
 
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
@@ -40,29 +41,22 @@ ROBOTSTXT_OBEY = False
 
 # Override the default request headers:
 DEFAULT_REQUEST_HEADERS = {
-    'accept':' text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3',
-    'accept-encoding':' gzip, deflate, br',
-    'accept-language':' zh-CN,zh;q=0.9',
-    'cache-control':' max-age=0',
-    'cookie':'_T_WM=48950117954; ALF=1560173355; SCF=AkdNqmbFG1ZxtQbKRVV2eFK9U0vpgsuoC-SP4_hXtyQ-H_V_yVWSfu99l3DC0gFVLeUM6yQM24oj5Wu2SJGoeeI.; SUBP=0033WrSXqPxfM725Ws9jqgMF55529P9D9Wh6BG_pevVvPXfx08sbfjTg5JpX5KzhUgL.FoqXehzN1K.fSKn2dJLoI0Uui--Xi-iWi-iWi--NiKLWiKnXi--fiK.7iKy2i--ci-27iK.pi--NiKLWiKnXi--fi-i2i-zp; SUB=_2A25x57vMDeRhGeBK61AW-SfJzjSIHXVTK8WErDV6PUJbkdAKLXf6kW1NR-XwGCmVgo7YLVz7f_h0O0gM0GUo9ZCD; SUHB=0G0uBK6WbzhZbg; SSOLoginState=1558432668',
-    'upgrade-insecure-requests':' 1',
-    'user-agent':' Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.86 Safari/537.36',
+   'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+   'Accept-Language': 'en',
+   'user-agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.86 Safari/537.36',
 }
 
 # Enable or disable spider middlewares
 # See https://doc.scrapy.org/en/latest/topics/spider-middleware.html
-SPIDER_MIDDLEWARES = {
-   # 'weibouser.middlewares.WeibouserSpiderMiddleware': 543,
-}
+#SPIDER_MIDDLEWARES = {
+#    'zhihulink.middlewares.ZhihulinkSpiderMiddleware': 543,
+#}
 
 # Enable or disable downloader middlewares
 # See https://doc.scrapy.org/en/latest/topics/downloader-middleware.html
-DOWNLOADER_MIDDLEWARES = {
-# middleware 需要添加在downloadmoddleware部分才有效
-#    'weibouser.middlewares.CookiesMiddleware': 543,
-    'weibouser.middlewares.WeibouserDownloaderMiddleware': 543,
-
-}
+#DOWNLOADER_MIDDLEWARES = {
+#    'zhihulink.middlewares.ZhihulinkDownloaderMiddleware': 543,
+#}
 
 # Enable or disable extensions
 # See https://doc.scrapy.org/en/latest/topics/extensions.html
@@ -73,8 +67,8 @@ DOWNLOADER_MIDDLEWARES = {
 # Configure item pipelines
 # See https://doc.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
-   'weibouser.pipelines.WeibouserPipeline': 300,
-   'weibouser.pipelines.MongoPipline':301,
+   'zhihulink.pipelines.MongoPipeLine': 300,
+   'scrapy_redis.pipelines.RedisPipeline': 301
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)
@@ -98,14 +92,16 @@ ITEM_PIPELINES = {
 #HTTPCACHE_IGNORE_HTTP_CODES = []
 #HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
 
-COOKIESPOOL_URL = 'http://localhost:5000/weibo/random'
+#mongodb_info
 
-MONGO_URI = '152.136.125.90'
-MONGO_DB = 'weibo'
+TABLE_NAME = 'userinfo'
+MONGO_URI = 'localhost'
+MONGO_DB = 'zhihu'
 
-# 分布式部署
+#scrapy-redis
 SCHEDULER = "scrapy_redis.scheduler.Scheduler"
 DUPEFILTER_CLASS = "scrapy_redis.dupefilter.RFPDupeFilter"
-REDIS_URL = 'redis://:123456@152.136.125.90:6379'
+# SCHEDULER_FLUSH_ON_START = True
 
-# 分布式需要中心主机 打开mongodb redis 同时打开proxy cookies pool方便从属节点获取
+#remote-redis
+REDIS_URL = 'redis://root:123456@152.136.125.90:6379'

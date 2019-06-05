@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Scrapy settings for weibouser project
+# Scrapy settings for mweibouser project
 #
 # For simplicity, this file contains only settings considered important or
 # commonly used. You can find more settings consulting the documentation:
@@ -9,14 +9,14 @@
 #     https://doc.scrapy.org/en/latest/topics/downloader-middleware.html
 #     https://doc.scrapy.org/en/latest/topics/spider-middleware.html
 
-BOT_NAME = 'weibouser'
 
-SPIDER_MODULES = ['weibouser.spiders']
-NEWSPIDER_MODULE = 'weibouser.spiders'
+
+SPIDER_MODULES = ['mweibouser.spiders']
+NEWSPIDER_MODULE = 'mweibouser.spiders'
 
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
-#USER_AGENT = 'weibouser (+http://www.yourdomain.com)'
+#USER_AGENT = 'mweibouser (+http://www.yourdomain.com)'
 
 # Obey robots.txt rules
 ROBOTSTXT_OBEY = False
@@ -40,30 +40,28 @@ ROBOTSTXT_OBEY = False
 
 # Override the default request headers:
 DEFAULT_REQUEST_HEADERS = {
-    'accept':' text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3',
+    'accept':' application/json, text/plain, */*',
     'accept-encoding':' gzip, deflate, br',
     'accept-language':' zh-CN,zh;q=0.9',
-    'cache-control':' max-age=0',
-    'cookie':'_T_WM=48950117954; ALF=1560173355; SCF=AkdNqmbFG1ZxtQbKRVV2eFK9U0vpgsuoC-SP4_hXtyQ-H_V_yVWSfu99l3DC0gFVLeUM6yQM24oj5Wu2SJGoeeI.; SUBP=0033WrSXqPxfM725Ws9jqgMF55529P9D9Wh6BG_pevVvPXfx08sbfjTg5JpX5KzhUgL.FoqXehzN1K.fSKn2dJLoI0Uui--Xi-iWi-iWi--NiKLWiKnXi--fiK.7iKy2i--ci-27iK.pi--NiKLWiKnXi--fi-i2i-zp; SUB=_2A25x57vMDeRhGeBK61AW-SfJzjSIHXVTK8WErDV6PUJbkdAKLXf6kW1NR-XwGCmVgo7YLVz7f_h0O0gM0GUo9ZCD; SUHB=0G0uBK6WbzhZbg; SSOLoginState=1558432668',
-    'upgrade-insecure-requests':' 1',
+    'cookie':' _T_WM=52231965963; SUB=_2A25x4SwTDeRhGeBK61AW-SfJzjSIHXVTLbRbrDV6PUJbkdAKLVnhkW1NR-XwGFRISiLY2EfW5-QKms6sVZdTvrsN; SUHB=0BLo0YkHGQ8ACj; SCF=Atd-xXDCx7-dmiWylV3LoyUwdqvJWJr78FXmI18qlMhqonzre1Fw3W5iq64DqA8t1RkTcNudoO7uIJ_MYA4PQgg.; MLOGIN=1; WEIBOCN_FROM=1110006030; XSRF-TOKEN=49da94; M_WEIBOCN_PARAMS=fid%3D2304132405925587_-_WEIBO_SECOND_PROFILE_WEIBO%26uicode%3D10000011',
     'user-agent':' Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.86 Safari/537.36',
+    'x-requested-with':' XMLHttpRequest',
 }
 
 # Enable or disable spider middlewares
 # See https://doc.scrapy.org/en/latest/topics/spider-middleware.html
-SPIDER_MIDDLEWARES = {
-   # 'weibouser.middlewares.WeibouserSpiderMiddleware': 543,
-}
+#SPIDER_MIDDLEWARES = {
+#    'mweibouser.middlewares.MweibouserSpiderMiddleware': 543,
+#}
 
 # Enable or disable downloader middlewares
 # See https://doc.scrapy.org/en/latest/topics/downloader-middleware.html
 DOWNLOADER_MIDDLEWARES = {
-# middleware 需要添加在downloadmoddleware部分才有效
-#    'weibouser.middlewares.CookiesMiddleware': 543,
-    'weibouser.middlewares.WeibouserDownloaderMiddleware': 543,
-
+    # 启用middleware为了有效 需要优先于默认的cookie以及proxy代理
+    # ？？？
+    'mweibouser.middlewares.CookiesMiddleWare' : 553,
+    'mweibouser.middlewares.ProxiesMiddleWare' : 555
 }
-
 # Enable or disable extensions
 # See https://doc.scrapy.org/en/latest/topics/extensions.html
 #EXTENSIONS = {
@@ -72,9 +70,12 @@ DOWNLOADER_MIDDLEWARES = {
 
 # Configure item pipelines
 # See https://doc.scrapy.org/en/latest/topics/item-pipeline.html
+
 ITEM_PIPELINES = {
-   'weibouser.pipelines.WeibouserPipeline': 300,
-   'weibouser.pipelines.MongoPipline':301,
+    'mweibouser.pipelines.FormatTimePipeLine':300,
+    'mweibouser.pipelines.TimePipeLine': 301,
+    # 存储管道需要最后经过
+    'mweibouser.pipelines.MongoPipeLine': 302,
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)
@@ -98,14 +99,15 @@ ITEM_PIPELINES = {
 #HTTPCACHE_IGNORE_HTTP_CODES = []
 #HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
 
-COOKIESPOOL_URL = 'http://localhost:5000/weibo/random'
+# 设置数据库连接信息
+MONGO_URI = 'localhost'
+MONGO_DB = 'mweibo_info'
 
-MONGO_URI = '152.136.125.90'
-MONGO_DB = 'weibo'
+# 是指cookies api获取接口
+COOKIES_URL = 'http://localhost:5000/weibo/random'
+PROXY_URL = 'http://localhost:5555/random'
 
-# 分布式部署
-SCHEDULER = "scrapy_redis.scheduler.Scheduler"
-DUPEFILTER_CLASS = "scrapy_redis.dupefilter.RFPDupeFilter"
-REDIS_URL = 'redis://:123456@152.136.125.90:6379'
-
-# 分布式需要中心主机 打开mongodb redis 同时打开proxy cookies pool方便从属节点获取
+# ？？
+# 作为封ip的标志 从而使用代理 会自动在request中判断
+# 并且自动在retry_times字段中赋值 不需要人为操作
+RETRY_HTTP_CODES = [401, 403, 408, 414, 500, 502, 503, 504]
