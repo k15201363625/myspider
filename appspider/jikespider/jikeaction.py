@@ -14,39 +14,50 @@ class JikeAction(object):
         '''
         # 驱动
         self.needed_params={
-            'platformName': PLATFORM_NAME,
-            'deviceName': DEVICE_NAME,
-            'appPackage': APP_PACKAGE,
-            'appActivity': APP_ACTIVITY
+            # "deviceName": DEVICE_NAME,
+            # "platformName": PLATFORM_NAME,
+            # "appActivity": APP_ACTIVITY,
+            # "appPackage": APP_PACKAGE
+            "deviceName": "Google_Nexus_5",
+            "platformName": "Android",
+            "appActivity": ".ui.activity.RgFragHubActivity",
+            "appPackage": "com.ruguoapp.jike"
         }
         self.driver = webdriver.Remote(DRIVER_SERVER,self.needed_params)
         self.waite = WebDriverWait(self.driver,TIMEOUT)
+        # 已经爬取过关注粉丝列表的用户
+        self.visitedUsers = []
 
     def login_page(self):
         # 首先登陆qq 模拟登陆
-        qqlogin = self.waite.until(EC.presence_of_element_located((By.ID,'com.ruguoapp.jike:id/tvPlatform')))
+        qqlogin = self.waite.until(EC.presence_of_element_located((By.XPATH,'//*[@resource-id="com.ruguoapp.jike:id/login_flexbox"]//android.widget.FrameLayout[2]')))
         qqlogin.click()
-        login = self.waite.until(EC.presence_of_element_located((By.ID,'com.tencent.mobileqq:id/name')))
-        login.click()
+        # login_1 = self.waite.until(EC.presence_of_element_located((By.ID,'com.tencent.mobileqq:id/login')))
+        # login_1.click()
+        login_2 = self.waite.until(EC.presence_of_element_located((By.XPATH,'//android.widget.Button[@resource-id="com.tencent.mobileqq:id/name"]')))
+        login_2.click()
         # 获取动态页面
-        start_page = self.waite.until(EC.presence_of_element_located((By.XPATH,'//android.widget.HorizontalScrollView[@id="com.ruguoapp.jike:id/tab_layout"]//android.widget.LinearLayout//androidx.appcompat.app.ActionBar.d[2]')))
+        start_page = self.waite.until(EC.presence_of_element_located((By.XPATH,'//*[@resource-id="com.ruguoapp.jike:id/tab_layout"]//android.widget.LinearLayout//androidx.appcompat.app.ActionBar.d[2]')))
         start_page.click()
 
     def get_now_user(self):
         # 检查当前全局元素是否已定位到
         # items = self.waite.until(EC.presence_of_all_elements_located((By.XPATH,'//*[@recource-id="com.ruguoapp.jike:id/lay_ugc_header"]//android.widget.ImageView')))
+        self.waite.until(EC.presence_of_element_located((By.ID,'com.ruguoapp.jike:id/gradual_mask')))
         # 还是之前的位置
         self.driver.swipe(FLICK_START_X, FLICK_START_Y + FLICK_DISTANCE, FLICK_START_X, FLICK_START_Y)
         # 不需要全部 只需要一个
-        item = self.waite.until(EC.presence_of_element_located((By.id,'//android.widget.RelativeLayout[@recource-id="com.ruguoapp.jike:id/lay_ugc_header"]//android.widget.ImageView')))
+        item = self.waite.until(EC.presence_of_element_located((By.XPATH,'//android.widget.RelativeLayout[@resource-id="com.ruguoapp.jike:id/lay_ugc_header"]//android.widget.ImageView')))
+        # 避免获取同一个用户的关注粉丝列表 所以需要进行用户判断
+
         return item
 
-    def get_followers(self,elem):
+    def get_followers(self):
         # 通过检查活动后效果没有改变从而退出循环
         old_items = []
         while True:
             # 需要检查是否已经全部显示
-            new_items = self.waite.until(EC.presence_of_all_elements_located((By.XPATH,'//*[@recource-id="com.ruguoapp.jike:id/gradual_mask"]//android.widget.ImageView')))
+            new_items = self.waite.until(EC.presence_of_all_elements_located((By.XPATH,'//*[@resource-id="com.ruguoapp.jike:id/gradual_mask"]//android.widget.ImageView')))
             if new_items != old_items:
                 old_items = new_items
             else:
@@ -58,12 +69,15 @@ class JikeAction(object):
             self.driver.swipe(FLICK_START_X, FLICK_START_Y + FLICK_DISTANCE, FLICK_START_X, FLICK_START_Y)
 
 
-    def get_fans(self,elem):
+    def get_fans(self):
         # 通过检查活动后效果没有改变从而退出循环
         old_items = []
         while True:
             # 需要检查是否已经全部显示
-            new_items = self.waite.until(EC.presence_of_all_elements_located((By.XPATH,'//*[@recource-id="com.ruguoapp.jike:id/gradual_mask"]//android.widget.ImageView')))
+            # new_items = self.waite.until(EC.presence_of_all_elements_located((By.XPATH,'//*[@recource-id="com.ruguoapp.jike:id/gradual_mask"]//android.widget.ImageView')))
+            
+            new_items = self.waite.until(EC.presence_of_all_elements_located((By.ID,'com.ruguoapp.jike:id/iv_avatar')))
+
             if new_items != old_items:
                 old_items = new_items
             else:
@@ -85,17 +99,26 @@ class JikeAction(object):
         sleep(GOBACK_SLEEP_TIME)
     
     def getusersinfo(self,maxnum):
+        self.login_page()
         for i in range(maxnum):
-            self.login_page(i)
             useritem = self.get_now_user()
             useritem.click()
-            fanslist = self.waite.until(EC.presence_of_element_located((By.ID,'com.ruguoapp.jike:id/scl_followed_count')))
-            self.get_fans(fanslist)
-            self.goback()
-            followerslist = self.waite.until(EC.presence_of_element_located((By.ID,'com.ruguoapp.jike:id/scl_following_count')))
-            self.get_followers(followerslist)
-            self.goback()
-            self.goback()
+            username = self.waite.until(EC.presence_of_element_located((By.ID,'com.ruguoapp.jike:id/tv_username'))).get_attribute('text')
+            print('now username is:'+ username + '\n')
+            if username in self.visitedUsers:
+                self.goback()
+                continue
+            else:
+                self.visitedUsers.append(username)
+                fanslist = self.waite.until(EC.presence_of_element_located((By.ID,'com.ruguoapp.jike:id/scl_followed_count')))
+                fanslist.click()
+                self.get_fans()
+                self.goback()
+                followerslist = self.waite.until(EC.presence_of_element_located((By.ID,'com.ruguoapp.jike:id/scl_following_count')))
+                followerslist.click()
+                self.get_followers()
+                self.goback()
+                self.goback()
 
 if __name__=='__main__':
     action = JikeAction()
