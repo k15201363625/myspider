@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from scrapy import Spider,Request
 import json
-from mweibouser.items import *
+from weibouserinfo.items import *
 
 class MwbspiderSpider(Spider):
     name = 'mwbspider'
@@ -150,11 +150,8 @@ class MwbspiderSpider(Spider):
     #                       meta={'uid': uid, 'page': page})
     #
     #
+    # 出错重写部分内容
     def parse_user(self, response):
-        """
-        解析用户信息
-        :param response: Response对象
-        """
         self.logger.debug(response)
         result = json.loads(response.text)
         if result.get('data').get('userInfo'):
@@ -181,10 +178,6 @@ class MwbspiderSpider(Spider):
                           meta={'page': 1, 'uid': uid})
 
     def parse_follows(self, response):
-        """
-        解析用户关注
-        :param response: Response对象
-        """
         result = json.loads(response.text)
         if result.get('ok') and result.get('data').get('cards') and len(result.get('data').get('cards')) and \
                 result.get('data').get('cards')[-1].get(
@@ -211,10 +204,6 @@ class MwbspiderSpider(Spider):
                           callback=self.parse_follows, meta={'page': page, 'uid': uid})
 
     def parse_fans(self, response):
-        """
-        解析用户粉丝
-        :param response: Response对象
-        """
         result = json.loads(response.text)
         if result.get('ok') and result.get('data').get('cards') and len(result.get('data').get('cards')) and \
                 result.get('data').get('cards')[-1].get(
@@ -241,10 +230,6 @@ class MwbspiderSpider(Spider):
                           callback=self.parse_fans, meta={'page': page, 'uid': uid})
 
     def parse_weibos(self, response):
-        """
-        解析微博列表
-        :param response: Response对象
-        """
         result = json.loads(response.text)
         if result.get('ok') and result.get('data').get('cards'):
             weibos = result.get('data').get('cards')

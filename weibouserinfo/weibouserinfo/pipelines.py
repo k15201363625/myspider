@@ -7,7 +7,7 @@
 import time
 import pymongo
 import re
-from mweibouser.items import *
+from weibouserinfo.items import *
 
 
 # 对于user  以及 weibo item加上爬起时间字段
