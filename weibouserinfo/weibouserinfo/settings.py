@@ -108,10 +108,11 @@ COOKIES_URL = 'http://localhost:5000/weibo/random'
 PROXY_URL = 'http://localhost:5555/random'
 
 # mongodb 链接信息
-MONGO_URI = '152.136.125.90'
+
 MONGO_DB = 'mweibo_info'
 
 # 分布式部署
+MONGO_URI = '152.136.125.90'
 SCHEDULER = "scrapy_redis.scheduler.Scheduler"
 DUPEFILTER_CLASS = "scrapy_redis.dupefilter.RFPDupeFilter"
 REDIS_URL = 'redis://:123456@152.136.125.90:6379'
@@ -119,3 +120,10 @@ REDIS_URL = 'redis://:123456@152.136.125.90:6379'
 # 作为封ip的标志 从而使用代理 会自动在request中判断
 # 并且自动在retry_times字段中赋值 不需要人为操作
 RETRY_HTTP_CODES = [401, 403, 408, 414, 500, 502, 503, 504]
+
+
+# curl http://192.168.233.66:6800/schedule.json -d project=mweibouser -d spider=mwbspider
+# curl http://192.168.233.66:6800/cancel.json -d project=mweibouser -d job=
+
+# curl http://152.136.125.90:6800/schedule.json -d project=mweibouser -d spider=mwbspider
+# curl http://152.136.125.90:6800/cancel.json -d project=mweibouser -d job=
