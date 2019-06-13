@@ -18,7 +18,7 @@ class ValidTester(object):
         for username, cookies in cookies_groups.items():
             self.test(username, cookies)
 
-
+            
 class WeiboValidTester(ValidTester):
     def __init__(self, website='weibo'):
         ValidTester.__init__(self, website)

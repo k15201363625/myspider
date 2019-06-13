@@ -83,5 +83,6 @@ class ProxiesMiddleWare(object):
                 self.logger.debug('using proxy:' + proxy)
                 # 通过设定request的meta中的proxy字段 可以使scrapy使用代理请求
                 request.meta['proxy'] = uri
+    # process_response 目前尚未实现
 
 

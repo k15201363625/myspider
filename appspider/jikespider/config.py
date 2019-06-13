@@ -14,7 +14,7 @@ TIMEOUT = 300
 # 滑动控制点
 FLICK_START_X = 500
 FLICK_START_Y = 200
-FLICK_DISTANCE = 1200
+FLICK_DISTANCE = 800
 # TouchAction(driver)   .press(x=519, y=948)   .move_to(x=522, y=856)   .release()   .perform()
 # TouchAction(driver)   .press(x=590, y=709)   .move_to(x=587, y=619)   .release()   .perform()
 

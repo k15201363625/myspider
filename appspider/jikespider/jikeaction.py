@@ -22,6 +22,7 @@ class JikeAction(object):
             "platformName": "Android",
             "appActivity": ".ui.activity.RgFragHubActivity",
             "appPackage": "com.ruguoapp.jike"
+
         }
         self.driver = webdriver.Remote(DRIVER_SERVER,self.needed_params)
         self.waite = WebDriverWait(self.driver,TIMEOUT)

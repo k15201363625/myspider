@@ -58,7 +58,6 @@ DEFAULT_REQUEST_HEADERS = {
 # See https://doc.scrapy.org/en/latest/topics/downloader-middleware.html
 DOWNLOADER_MIDDLEWARES = {
     # 启用middleware为了有效 需要优先于默认的cookie以及proxy代理
-    # ？？？
     # 'mweibouser.middlewares.CookiesMiddleWare' : 553,
     # 'mweibouser.middlewares.ProxiesMiddleWare' : 555
 }
