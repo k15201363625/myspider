@@ -13,4 +13,4 @@ scrapyd-client
 scrapy-redis
 scrapy-splash
 fake-useragent
-Twisted==18.9.0
+Twisted==22.1.0
